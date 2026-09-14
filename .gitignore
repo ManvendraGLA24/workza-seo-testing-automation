@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+/.pnp
+.pnp.js
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Testing
+/coverage
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build
+/dist
+/build
+.cache
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Reports
+/reports
+*.html
+
+# Data
+*.json
+*.csv
+!/config/**/*.json

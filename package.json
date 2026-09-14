@@ -1,0 +1,33 @@
+{
+  "name": "workza-seo-testing-automation",
+  "version": "1.0.0",
+  "description": "SEO testing automation suite for workza.ai",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "lint": "eslint .",
+    "start": "node scripts/index.js"
+  },
+  "keywords": [
+    "seo",
+    "automation",
+    "testing",
+    "workza"
+  ],
+  "author": "ManvendraGLA24",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^29.0.0",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0"
+  },
+  "dependencies": {
+    "puppeteer": "^21.0.0",
+    "axios": "^1.6.0",
+    "dotenv": "^16.0.0",
+    "node-cron": "^3.0.0",
+    "cheerio": "^1.0.0"
+  }
+}
