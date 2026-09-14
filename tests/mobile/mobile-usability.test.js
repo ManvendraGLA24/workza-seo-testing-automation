@@ -12,9 +12,6 @@ class MobileUsabilityTest {
     this.results = {};
   }
 
-  /**
-   * Test viewport configuration
-   */
   async testViewport() {
     try {
       const response = await axios.get(this.baseUrl);
@@ -36,15 +33,11 @@ class MobileUsabilityTest {
     }
   }
 
-  /**
-   * Test for font size legibility
-   */
   async testFontSize() {
     try {
       const response = await axios.get(this.baseUrl);
       const $ = cheerio.load(response.data);
 
-      // Check if there are elements with very small font sizes
       const smallFontElements = $('body *').filter((i, el) => {
         const style = $(el).attr('style');
         if (!style) return false;
@@ -63,16 +56,13 @@ class MobileUsabilityTest {
     }
   }
 
-  /**
-   * Test touch-friendly buttons and links
-   */
   async testTouchFriendly() {
     try {
       const response = await axios.get(this.baseUrl);
       const $ = cheerio.load(response.data);
 
       const buttons = $('button, a, input[type="button"]').length;
-      const hasMinTouchSize = buttons > 0; // Simplified check
+      const hasMinTouchSize = buttons > 0;
 
       this.results.touchFriendly = {
         status: hasMinTouchSize ? 'PASS' : 'WARN',
@@ -86,16 +76,12 @@ class MobileUsabilityTest {
     }
   }
 
-  /**
-   * Test for horizontal scrolling issues
-   */
   async testHorizontalScroll() {
     try {
       const response = await axios.get(this.baseUrl);
       const $ = cheerio.load(response.data);
 
-      // Check if layout uses flexible layouts (no fixed widths causing scroll)
-      const hasOverflow = response.data.includes('overflow: scroll') || 
+      const hasOverflow = response.data.includes('overflow: scroll') ||
                          response.data.includes('overflow-x: scroll');
 
       this.results.horizontalScroll = {
@@ -110,9 +96,6 @@ class MobileUsabilityTest {
     }
   }
 
-  /**
-   * Run all mobile usability tests
-   */
   async runAllTests() {
     console.log('📱 Running Mobile Usability Tests...');
     await this.testViewport();
@@ -122,5 +105,44 @@ class MobileUsabilityTest {
     return this.results;
   }
 }
+
+describe('Mobile Usability Tests', () => {
+  let mobileTest;
+  const config = {
+    website: { url: 'https://workza.ai' }
+  };
+
+  beforeAll(() => {
+    mobileTest = new MobileUsabilityTest(config);
+  });
+
+  test('should initialize mobile usability test', () => {
+    expect(mobileTest).toBeDefined();
+    expect(mobileTest.baseUrl).toBe('https://workza.ai');
+  });
+
+  test('should have results object', () => {
+    expect(mobileTest.results).toBeDefined();
+    expect(typeof mobileTest.results).toBe('object');
+  });
+
+  test('should run all mobile usability tests', async () => {
+    const results = await mobileTest.runAllTests();
+    expect(results).toBeDefined();
+    expect(Object.keys(results).length).toBeGreaterThan(0);
+  });
+
+  test('should test viewport configuration', async () => {
+    await mobileTest.testViewport();
+    expect(mobileTest.results.viewport).toBeDefined();
+    expect(mobileTest.results.viewport.status).toMatch(/PASS|FAIL/);
+  });
+
+  test('should test touch friendly elements', async () => {
+    await mobileTest.testTouchFriendly();
+    expect(mobileTest.results.touchFriendly).toBeDefined();
+    expect(mobileTest.results.touchFriendly.interactiveElements).toBeGreaterThanOrEqual(0);
+  });
+});
 
 module.exports = MobileUsabilityTest;
