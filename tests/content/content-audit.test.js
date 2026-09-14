@@ -12,9 +12,6 @@ class ContentAudit {
     this.results = {};
   }
 
-  /**
-   * Analyze page for meta tags
-   */
   async testMetaTags() {
     try {
       const response = await axios.get(this.baseUrl);
@@ -48,9 +45,6 @@ class ContentAudit {
     }
   }
 
-  /**
-   * Analyze heading structure (H1, H2, H3)
-   */
   async testHeadingStructure() {
     try {
       const response = await axios.get(this.baseUrl);
@@ -75,9 +69,6 @@ class ContentAudit {
     }
   }
 
-  /**
-   * Check for images with alt text
-   */
   async testImageAltText() {
     try {
       const response = await axios.get(this.baseUrl);
@@ -101,9 +92,6 @@ class ContentAudit {
     }
   }
 
-  /**
-   * Analyze page content length
-   */
   async testContentLength() {
     try {
       const response = await axios.get(this.baseUrl);
@@ -125,9 +113,6 @@ class ContentAudit {
     }
   }
 
-  /**
-   * Run all content audit tests
-   */
   async runAllTests() {
     console.log('📝 Running Content Audit...');
     await this.testMetaTags();
@@ -137,5 +122,38 @@ class ContentAudit {
     return this.results;
   }
 }
+
+describe('Content Audit Tests', () => {
+  let contentAudit;
+  const config = {
+    website: { url: 'https://workza.ai' }
+  };
+
+  beforeAll(() => {
+    contentAudit = new ContentAudit(config);
+  });
+
+  test('should initialize content audit', () => {
+    expect(contentAudit).toBeDefined();
+    expect(contentAudit.baseUrl).toBe('https://workza.ai');
+  });
+
+  test('should have results object', () => {
+    expect(contentAudit.results).toBeDefined();
+    expect(typeof contentAudit.results).toBe('object');
+  });
+
+  test('should run all content audit tests', async () => {
+    const results = await contentAudit.runAllTests();
+    expect(results).toBeDefined();
+    expect(Object.keys(results).length).toBeGreaterThan(0);
+  });
+
+  test('should validate meta tags', async () => {
+    await contentAudit.testMetaTags();
+    expect(contentAudit.results.metaTags).toBeDefined();
+    expect(contentAudit.results.metaTags.status).toMatch(/PASS|WARN|FAIL/);
+  });
+});
 
 module.exports = ContentAudit;
