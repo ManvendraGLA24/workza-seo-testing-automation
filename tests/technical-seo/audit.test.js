@@ -4,7 +4,6 @@
  */
 
 const axios = require('axios');
-const { parse } = require('url');
 
 class TechnicalSEOAudit {
   constructor(config) {
@@ -12,7 +11,6 @@ class TechnicalSEOAudit {
     this.results = {};
   }
 
-  // Test 1: Check robots.txt
   async testRobotsTxt() {
     try {
       const response = await axios.get(`${this.baseUrl}/robots.txt`);
@@ -33,7 +31,6 @@ class TechnicalSEOAudit {
     }
   }
 
-  // Test 2: Check sitemap.xml
   async testSitemap() {
     try {
       const response = await axios.get(`${this.baseUrl}/sitemap.xml`);
@@ -55,7 +52,6 @@ class TechnicalSEOAudit {
     }
   }
 
-  // Test 3: Check SSL Certificate
   async testSSL() {
     const url = new URL(this.baseUrl);
     const protocol = url.protocol;
@@ -67,7 +63,6 @@ class TechnicalSEOAudit {
     return this.results.ssl;
   }
 
-  // Test 4: Check HTTP Status Codes
   async testStatusCodes() {
     try {
       const response = await axios.head(this.baseUrl);
@@ -87,7 +82,6 @@ class TechnicalSEOAudit {
     }
   }
 
-  // Test 5: Check Mobile Friendliness
   async testMobileFriendliness() {
     try {
       const response = await axios.get(this.baseUrl, {
@@ -111,11 +105,10 @@ class TechnicalSEOAudit {
     }
   }
 
-  // Test 6: Check for Structured Data (Schema.org)
   async testStructuredData() {
     try {
       const response = await axios.get(this.baseUrl);
-      const hasStructuredData = response.data.includes('schema.org') || 
+      const hasStructuredData = response.data.includes('schema.org') ||
                                 response.data.includes('application/ld+json');
       this.results.structuredData = {
         status: hasStructuredData ? 'PASS' : 'WARN',
@@ -132,7 +125,6 @@ class TechnicalSEOAudit {
     }
   }
 
-  // Run all technical SEO tests
   async runAllTests() {
     console.log('🔧 Running Technical SEO Audit...');
     await this.testRobotsTxt();
@@ -144,5 +136,39 @@ class TechnicalSEOAudit {
     return this.results;
   }
 }
+
+describe('Technical SEO Audit', () => {
+  let auditTest;
+  const config = {
+    website: { url: 'https://workza.ai', name: 'Workza.ai' }
+  };
+
+  beforeAll(() => {
+    auditTest = new TechnicalSEOAudit(config);
+  });
+
+  test('should initialize audit test properly', () => {
+    expect(auditTest).toBeDefined();
+    expect(auditTest.baseUrl).toBe('https://workza.ai');
+  });
+
+  test('should check SSL certificate', async () => {
+    const result = await auditTest.testSSL();
+    expect(result).toBeDefined();
+    expect(result.status).toBeDefined();
+    expect(['PASS', 'FAIL']).toContain(result.status);
+  });
+
+  test('should have results object', () => {
+    expect(auditTest.results).toBeDefined();
+    expect(typeof auditTest.results).toBe('object');
+  });
+
+  test('should run all technical SEO tests', async () => {
+    const results = await auditTest.runAllTests();
+    expect(results).toBeDefined();
+    expect(Object.keys(results).length).toBeGreaterThan(0);
+  });
+});
 
 module.exports = TechnicalSEOAudit;
